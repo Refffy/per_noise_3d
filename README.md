@@ -5,3 +5,4 @@ Ken Perlin's noise procedural generation with multi-octaves algorithm realizatio
 
 
 ![alt text](https://github.com/Refffy/per_noise_3d/blob/master/octaves.png?raw=true)
+![alt text](https://github.com/Refffy/per_noise_3d/blob/master/no_octaves.png?raw=true)
