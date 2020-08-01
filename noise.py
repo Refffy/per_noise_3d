@@ -4,8 +4,8 @@ from math import floor
 def noise_octaves(x, y, z, octaves, persistence):
     amplitude = 1.0
     frequency = 1.0
-    maximum = 0.0
-    res = 0.0
+    maximum = 0.01
+    res = 0.01
     
     for i in range(0, octaves):
         maximum += amplitude
@@ -38,9 +38,9 @@ def perlin(x, y, z):
     BA = p[B]+Z
     BB = p[B+1]+Z
 
-    return linear_interpolation(w, linear_interpolation(v, linear_interpolation(u, grad(p[AA], x, y, z), grad(p[BA], x-1, y, z)), 
+    return linear_interpolation2(w, linear_interpolation2(v, linear_interpolation(u, grad(p[AA], x, y, z), grad(p[BA], x-1, y, z)), 
            linear_interpolation(u, grad(p[AB], x, y-1, z), grad(p[BB], x-1, y-1, z))),
-           linear_interpolation(v, linear_interpolation(u, grad(p[AA+1], x, y, z-1 ), grad(p[BA+1], x-1, y, z-1)),
+           linear_interpolation2(v, linear_interpolation(u, grad(p[AA+1], x, y, z-1 ), grad(p[BA+1], x-1, y, z-1)),
            linear_interpolation(u, grad(p[AB+1], x, y-1, z-1), grad(p[BB+1], x-1, y-1, z-1 ))))
 
 def clamp(x, minimal, maximal):
@@ -55,20 +55,23 @@ def smootherstep(edge0, edge1, x):
         edge0 = edge1 - 1
     #clamp() используется для гарантии того, что x будет в каком-либо диапозоне(в данном случае [0, 1])
     x = clamp((x - edge0) / (edge1 - edge0), 0, 1)
-    #6x^5-15x^4+10x^3
+     #6x^5-15x^4+10x^3
     return x ** 3 * (x * (x * 6 - 15) + 10)
 
 #более точный метод линейной интерполяции, при котором есть гарантия, что v = v1, при t = 1
 def linear_interpolation(v0, v1, t):
     return (1-t) * v0 + t * v1
 
+def linear_interpolation2(t, v0, v1):
+    return v0 + t * (v1 - v0)
+
 def grad(hash, x, y, z):
-    h = hash&15
+    h = hash & 15
     u = x if h < 8 else y
-    v = y if h < 4 else (x if h == 12 or h == 14 else z) 
+    v = y if h < 4 else (x if h == 12 or h == 14 else z)
     return (u if (h&1) == 0 else -u) + (v if (h&2) == 0 else -v)
 
-p = [0] * 512
+p = [0]*512
 #np.random.RandomState(seed=0).permutation(256)
 permutation = [158,  83, 170, 101, 150, 200, 118, 236,  63, 135, 149, 235, 109,
        189, 153,  73, 207, 171, 157,  97, 188,  45, 245, 138, 110, 255,
@@ -90,13 +93,14 @@ permutation = [158,  83, 170, 101, 150, 200, 118, 236,  63, 135, 149, 235, 109,
         79, 197, 208, 115, 148, 248,  72,  77,  25, 165,  81, 240, 174,
        243,  39, 230, 193,  58, 140,  88, 216,  70,  87,  36, 242,  21,
        211,   9, 103, 195,  67, 192, 117,  47, 172]
+
 for i in range(256):
     p[256+i] = p[i] = permutation[i]
 
 if __name__ == '__main__':
     print(perlin(3.14, 42, 7), "-просто шум")
     print("------------------")
-    print(noise_ocatves(3.14, 42, 7, 5, 0.5), "-шум с октавами")
+    print(noise_octaves(3.14, 42, 7, 5, 0.5), "-шум с октавами")
     print("------------------")
     begin = datetime.datetime.now()
     print(datetime.datetime.now() - begin)
