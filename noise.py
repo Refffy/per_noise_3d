@@ -4,12 +4,13 @@ from math import floor
 def noise_octaves(x, y, z, octaves, persistence):
     amplitude = 1.0
     frequency = 1.0
-    maximum = 0.01
-    res = 0.01
-    
+    maximum = 0.0
+    res = 0.0
+
     for i in range(0, octaves):
-        maximum += amplitude
+        #res += perlin(x + frequency, y + frequency, z + frequency) * amplitude 
         res += perlin(x * frequency, y * frequency, z * frequency) + amplitude
+        maximum += amplitude
         amplitude *= persistence
         frequency *= 2
         x *= 2
@@ -26,9 +27,9 @@ def perlin(x, y, z):
     y -= floor(int(y))
     z -= floor(int(z))
 
-    u = smootherstep(1, -200, x)
-    v = smootherstep(1, -600, y)
-    w = smootherstep(x, y, z)
+    u = smootherstep(2, 2, x+1)
+    v = smootherstep(2, 2, y+1)
+    w = smootherstep(2, 2, z+1)
     
     A = p[X]+Y 
     AA = p[A]+Z
@@ -38,10 +39,10 @@ def perlin(x, y, z):
     BA = p[B]+Z
     BB = p[B+1]+Z
 
-    return linear_interpolation2(w, linear_interpolation2(v, linear_interpolation(u, grad(p[AA], x, y, z), grad(p[BA], x-1, y, z)), 
-           linear_interpolation(u, grad(p[AB], x, y-1, z), grad(p[BB], x-1, y-1, z))),
-           linear_interpolation2(v, linear_interpolation(u, grad(p[AA+1], x, y, z-1 ), grad(p[BA+1], x-1, y, z-1)),
-           linear_interpolation(u, grad(p[AB+1], x, y-1, z-1), grad(p[BB+1], x-1, y-1, z-1 ))))
+    return linear_interpolation2(w, linear_interpolation2(v, linear_interpolation2(u, grad(p[AA], x, y, z), grad(p[BA], x-1, y, z)), 
+           linear_interpolation2(u, grad(p[AB], x, y-1, z), grad(p[BB], x-1, y-1, z))),
+           linear_interpolation(v, linear_interpolation(u, grad(p[AA+1], x, y, z-1 ), grad(p[BA+1], x-1, y, z-1)),
+           linear_interpolation2(u, grad(p[AB+1], x, y-1, z-1), grad(p[BB+1], x-1, y-1, z-1 ))))
 
 def clamp(x, minimal, maximal):
     if x < minimal:
