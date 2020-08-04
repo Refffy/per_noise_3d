@@ -1,3 +1,4 @@
+import random
 import numpy as np
 from math import floor
 
@@ -83,8 +84,7 @@ def grad(hash, x, y, z):
     чтобы определить являются ли u и v положительными или отрицательными, после чего возвращается их сумма''' 
 
 p = [0]*512
-permutation = list(np.random.RandomState(seed=23908).permutation(256))
-
+permutation = list(np.random.RandomState(seed=random.randint(0, 6000000)).permutation(256))
 for i in range(256):
     p[256+i] = p[i] = permutation[i]
 
