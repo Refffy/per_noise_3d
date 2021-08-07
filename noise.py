@@ -108,10 +108,4 @@ p = [0]*512
 permutation = list(np.random.RandomState(
     seed=random.randint(0, 6000000)).permutation(256))
 for i in range(256):
-    p[256+i] = p[i] = permutation[i]
-
-if __name__ == '__main__':
-    print(perlin(3.14, 42, 7), "-просто шум")
-    print("------------------")
-    print(noise_octaves(3.14, 42, 7, 5, 0.5), "-шум с октавами")
-    print("------------------")
+    p[i] = permutation[i]
